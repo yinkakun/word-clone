@@ -1,6 +1,6 @@
 import React from "react";
 
-export const GuessInput = ({ setGuesses, guesses }) => {
+export const GuessInput = ({ setGuesses, guesses, isGameOver }) => {
   const [guess, setGuess] = React.useState("");
 
   return (
@@ -12,8 +12,6 @@ export const GuessInput = ({ setGuesses, guesses }) => {
 
         const newGuesses = [...guesses, guess];
         setGuesses(newGuesses);
-
-        console.log({ guess });
         setGuess("");
       }}
     >
@@ -25,6 +23,7 @@ export const GuessInput = ({ setGuesses, guesses }) => {
         minLength="5"
         maxLength="5"
         required={true}
+        disabled={isGameOver}
         onChange={(event) => {
           setGuess(event.target.value.toUpperCase());
         }}
