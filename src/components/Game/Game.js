@@ -4,7 +4,7 @@ import { GuessResults } from "../GuessResults/GuessResults";
 import { sample } from "../../utils";
 import { WORDS } from "../../data";
 import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
-import { GameOver } from "../GameOver/GameOver";
+import { GameOverBanner } from "../Banner/GameOverBanner";
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
 // To make debugging easier, we'll log the solution in the console.
@@ -12,26 +12,33 @@ console.info({ answer });
 
 function Game() {
   const [guesses, setGuesses] = React.useState([]);
+  const [gameStatus, setGameStatus] = React.useState("running"); // win / lose / running
 
-  const isGameOver = () => {
-    const maxGuess = guesses.length === NUM_OF_GUESSES_ALLOWED;
-    const lastGuess = guesses.length ? guesses[guesses.length - 1] : "";
-    const isCorrect = lastGuess === answer;
+  const isGameOver = gameStatus !== "running";
 
-    if (maxGuess || isCorrect) return true;
+  const onGuessSubmit = (guess) => {
+    const newGuess = [...guesses, guess];
+    const isMaxGuesses = newGuess.length === NUM_OF_GUESSES_ALLOWED;
+    setGuesses(newGuess);
 
-    return false;
+    if (isMaxGuesses) {
+      setGameStatus("lose");
+    }
+
+    if (guess === answer) {
+      setGameStatus("win");
+    }
   };
 
   return (
     <React.Fragment>
       <GuessResults guesses={guesses} answer={answer} />
-      <GuessInput
-        guesses={guesses}
-        setGuesses={setGuesses}
-        isGameOver={isGameOver()}
+      <GuessInput onSubmit={onGuessSubmit} isGameOver={isGameOver} />
+      <GameOverBanner
+        answer={answer}
+        gameStatus={gameStatus}
+        guessesCount={guesses.length}
       />
-      {<GameOver guesses={guesses} answer={answer} />}
     </React.Fragment>
   );
 }

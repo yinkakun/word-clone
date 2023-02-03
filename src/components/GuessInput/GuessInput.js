@@ -1,6 +1,6 @@
 import React from "react";
 
-export const GuessInput = ({ setGuesses, guesses, isGameOver }) => {
+export const GuessInput = ({ isGameOver, onSubmit }) => {
   const [guess, setGuess] = React.useState("");
 
   return (
@@ -9,9 +9,7 @@ export const GuessInput = ({ setGuesses, guesses, isGameOver }) => {
       onSubmit={(event) => {
         event.preventDefault();
         if (guess.length < 5) return;
-
-        const newGuesses = [...guesses, guess];
-        setGuesses(newGuesses);
+        onSubmit(guess);
         setGuess("");
       }}
     >
